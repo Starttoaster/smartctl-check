@@ -1,14 +1,22 @@
 #!/bin/bash
 
-sudo smartctl -t short /dev/sda | grep "successful"
-sudo smartctl -t short /dev/sdb | grep "successful"
-sleep 130s
+NUMBER_DRIVES=$1
+END=1
 
-echo =========/dev/sda=========
-sudo smartctl -a /dev/sda | grep "Raw_Read\|Power_On\|Power_Cycle\|Reallocated\|Media_Wearout\|CurrentPending\|Uncorrectable"
-sudo smartctl -l selftest /dev/sda | grep "# 1"
+for LETTER in {a..z}; do
+        if [[ $END -le $NUMBER_DRIVES ]]; then
+                sudo smartctl -t short /dev/sd$LETTER | grep "successful"
+                ((END++))
+        fi
+done
 
-echo
-echo =========/dev/sdb=========
-sudo smartctl -a /dev/sdb | grep "Raw_Read\|Power_On\|Power_Cycle\|Reallocated\|Media_Wearout\|CurrentPending\|Uncorrectable"
-sudo smartctl -l selftest /dev/sdb | grep "# 1"
+sleep 125s
+END=1
+for LETTER in {a..z}; do
+        if [[ $END -le $NUMBER_DRIVES ]]; then
+                echo ============= /dev/sd$LETTER =============
+                sudo smartctl -a /dev/sd$LETTER | grep "Raw_Read\|Power_On\|Power_Cycle\|Reallocated\|Timeout\|Media_Wearout\|Cur$
+                sudo smartctl -l selftest /dev/sd$LETTER | grep "# 1"
+                ((END++))
+        fi
+done

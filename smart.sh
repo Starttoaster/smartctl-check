@@ -1,22 +1,12 @@
 #!/bin/bash
 
-NUMBER_DRIVES=$1
-END=1
-
-for LETTER in {a..z}; do
-        if [[ $END -le $NUMBER_DRIVES ]]; then
-                sudo smartctl -t short /dev/sd$LETTER | grep "successful"
-                ((END++))
-        fi
-done
-
+#Starts self-test
+ls /dev/sd* | sed 's/[0-9]*//g' | sort -u | while read -r line; do
+        sudo smartctl -t short $line | grep "successful";done
 sleep 125s
-END=1
-for LETTER in {a..z}; do
-        if [[ $END -le $NUMBER_DRIVES ]]; then
-                echo ============= /dev/sd$LETTER =============
-                sudo smartctl -a /dev/sd$LETTER | grep "Raw_Read\|Power_On\|Power_Cycle\|Reallocated\|Timeout\|Media_Wearout\|Cur$
-                sudo smartctl -l selftest /dev/sd$LETTER | grep "# 1"
-                ((END++))
-        fi
-done
+
+#Shows S.M.A.R.T. attributes and test results.
+ls /dev/sd* | sed 's/[0-9]*//g' | sort -u | while read -r line; do
+        echo ============= $line =============
+        sudo smartctl -a $line | grep "Raw_Read\|Power_On\|Power_Cycle\|Reallocated\|Timeout\|Media_Wearout\|CurrentPending\|Uncorrectable"
+        sudo smartctl -l selftest $line | grep "# 1";done

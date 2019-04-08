@@ -7,4 +7,4 @@ Clone this script somewhere on your server. Then run `sudo chmod u+x smart.sh` w
 
 Run with `./smart.sh`
 
-
+To get the output in a timestamped file, make the parent script run-able with `sudo chmod u+x parent.sh` and finally run with `.\parent.sh`

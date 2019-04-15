@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 DATE=$(date +"%Y%m%d")
 SEC=125
 ./runtest.sh > $DATE.log

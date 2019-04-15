@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
 #Starts self-test
-ls /dev/sd* | sed 's/[0-9]//g' | sort -u | while read -r line; do
-        sudo smartctl -t short $line | grep "successful";done
+smartctl --scan | cut -f1 -d" " | while read -r line; do
+        sudo smartctl -q silent -t short $line;done
